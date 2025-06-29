@@ -34,7 +34,7 @@ const useGgApiData = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          'https://openapi.gg.go.kr/RegionMnyFacltStus?KEY=3d6421d583ae41d09680781ddb9402c6&Type=json&pIndex=1&pSize=10'
+          `https://openapi.gg.go.kr/RegionMnyFacltStus?KEY=${import.meta.env.VITE_GG_OPEN_API_KEY}&Type=json&pIndex=1&pSize=10`
         );
         
         if (!response.ok) {
@@ -74,3 +74,7 @@ const useGgApiData = () => {
 };
 
 export default useGgApiData; 
+
+function loadEnv(mode: any, arg1: string) {
+  throw new Error('Function not implemented.');
+}
