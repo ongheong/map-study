@@ -1,1 +1,1 @@
-# naver-map-study
+# map-study
