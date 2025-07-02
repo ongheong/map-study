@@ -2,7 +2,7 @@
 
 경기도 지역화페 매장 공공데이터와 Google Maps/Places API를 활용하여, 실제 가맹점 위치와 구글 리뷰·별점 정보를 지도에 시각화하는 기능을 테스트하고자 만들었습니다.
 
----
+<br>
 
 ## 🛠️ 기술스택
 - React (TypeScript)
@@ -12,7 +12,7 @@
 - Google Places API
 - 경기도 지역화폐 사용 매장 Open API
 
----
+<br>
 
 ## 🚀 사용법
 1. 저장소 클론 및 의존성 설치
@@ -31,14 +31,14 @@
    ```
 4. 브라우저에서 `http://localhost:3000` 접속
 
----
+<br>
 
 ## ✨ 테스트한 기능
 - 경기도 공공데이터 API에서 가맹점 위치 및 정보를 불러옵니다.
 - Google Maps에 마커로 가맹점 위치를 시각화합니다.
 - 공공데이터 API 데이터를 Google Places API에 검색하여, 각 가맹점의 별점, 리뷰, 연락처를 불러옵니다.
 
----
+<br>
 
 ## 📁 프로젝트 구조
 ```
@@ -58,7 +58,7 @@
 └── 기타 설정 파일
 ```
 
---
+<br>
 
 ## 실행 화면
 <img width="1426" alt="image1231241" src="https://github.com/user-attachments/assets/a3086e35-f5d5-4537-aecb-acf6d71b32b2" />
