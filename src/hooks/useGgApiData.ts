@@ -1,28 +1,6 @@
 import { useState, useEffect } from 'react';
-
-interface FacilityData {
-  CMPNM_NM: string;
-  INDUTYPE_NM: string;
-  REFINE_LOTNO_ADDR: string;
-  REFINE_ROADNM_ADDR: string;
-  REFINE_WGS84_LOGT: string;
-  REFINE_WGS84_LAT: string;
-  SIGUN_NM: string;
-}
-
-interface ApiResponse {
-  RegionMnyFacltStus: [{
-    head: any[];
-  }, {
-    row: FacilityData[];
-  }];
-}
-
-interface MarkerData {
-  position: { lat: number; lng: number };
-  title: string;
-  content: string;
-}
+import { getGgFacilities } from '../apis/ggApi';
+import type { FacilityData, MarkerData } from '../types';
 
 const useGgApiData = () => {
   const [markers, setMarkers] = useState<MarkerData[]>([]);
@@ -33,16 +11,7 @@ const useGgApiData = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          `https://openapi.gg.go.kr/RegionMnyFacltStus?KEY=${import.meta.env.VITE_GG_OPEN_API_KEY}&Type=json&pIndex=1&pSize=10`
-        );
-        
-        if (!response.ok) {
-          throw new Error('API 요청 실패');
-        }
-
-        const data: ApiResponse = await response.json();
-        const facilities = data.RegionMnyFacltStus[1].row;
+        const facilities: FacilityData[] = await getGgFacilities();
 
         const markersData: MarkerData[] = facilities
           .filter(facility => facility.REFINE_WGS84_LAT && facility.REFINE_WGS84_LOGT)
