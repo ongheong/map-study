@@ -26,22 +26,37 @@ interface EnrichedPlaceCardProps {
   isLoading?: boolean;
 }
 
-const StarRating: React.FC<{ rating: number; total?: number }> = ({ rating, total }) => {
-  const stars = [];
+const StarRating: React.FC<{ rating: number; total?: number }> = ({
+  rating,
+  total,
+}) => {
+  const stars: React.ReactNode[] = [];
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
 
   for (let i = 0; i < fullStars; i++) {
-    stars.push(<span key={i} style={{ color: '#ffd700' }}>★</span>);
+    stars.push(
+      <span key={i} style={{ color: '#ffd700' }}>
+        ★
+      </span>
+    );
   }
-  
+
   if (hasHalfStar) {
-    stars.push(<span key="half" style={{ color: '#ffd700' }}>☆</span>);
+    stars.push(
+      <span key="half" style={{ color: '#ffd700' }}>
+        ☆
+      </span>
+    );
   }
-  
+
   const emptyStars = 5 - Math.ceil(rating);
   for (let i = 0; i < emptyStars; i++) {
-    stars.push(<span key={`empty-${i}`} style={{ color: '#ddd' }}>★</span>);
+    stars.push(
+      <span key={`empty-${i}`} style={{ color: '#ddd' }}>
+        ★
+      </span>
+    );
   }
 
   return (
@@ -54,103 +69,165 @@ const StarRating: React.FC<{ rating: number; total?: number }> = ({ rating, tota
   );
 };
 
-const EnrichedPlaceCard: React.FC<EnrichedPlaceCardProps> = ({ 
-  title, 
-  content, 
-  placeDetails, 
-  isLoading 
+function renderOpenStatus(opening_hours?: {
+  open_now: boolean;
+  weekday_text: string[];
+}) {
+  if (!opening_hours) return null;
+  if (typeof opening_hours.open_now === 'boolean') {
+    return (
+      <div style={{ marginBottom: '8px' }}>
+        <span
+          style={{
+            display: 'inline-block',
+            padding: '2px 8px',
+            borderRadius: '12px',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            backgroundColor: opening_hours.open_now ? '#4caf50' : '#f44336',
+            color: 'white',
+          }}
+        >
+          {opening_hours.open_now ? '영업 중' : '영업 종료'}
+        </span>
+      </div>
+    );
+  }
+  return (
+    <div style={{ marginBottom: '8px' }}>
+      <span
+        style={{
+          display: 'inline-block',
+          padding: '2px 8px',
+          borderRadius: '12px',
+          fontSize: '12px',
+          fontWeight: 'bold',
+          backgroundColor: '#bdbdbd',
+          color: 'white',
+        }}
+      >
+        영업 여부 정보 없음
+      </span>
+    </div>
+  );
+}
+
+const EnrichedPlaceCard: React.FC<EnrichedPlaceCardProps> = ({
+  title,
+  content,
+  placeDetails,
+  isLoading,
 }) => {
   return (
-    <div style={{ 
-      padding: '16px', 
-      border: '1px solid #ddd', 
-      borderRadius: '12px',
-      backgroundColor: '#fff',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      transition: 'transform 0.2s',
-      cursor: 'pointer'
-    }}
-    onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-    onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+    <div
+      style={{
+        padding: '16px',
+        border: '1px solid #ddd',
+        borderRadius: '12px',
+        backgroundColor: '#fff',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        transition: 'transform 0.2s',
+        cursor: 'pointer',
+      }}
+      onMouseEnter={(e) =>
+        (e.currentTarget.style.transform = 'translateY(-2px)')
+      }
+      onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
     >
-      <h4 style={{ margin: '0 0 12px 0', fontSize: '18px', fontWeight: 'bold' }}>
+      <h4
+        style={{ margin: '0 0 12px 0', fontSize: '18px', fontWeight: 'bold' }}
+      >
         {title}
       </h4>
-      
-      <div dangerouslySetInnerHTML={{ __html: content }} style={{ marginBottom: '12px' }} />
-      
+
+      <div
+        dangerouslySetInnerHTML={{ __html: content }}
+        style={{ marginBottom: '12px' }}
+      />
+
       {isLoading && (
         <div style={{ color: '#666', fontStyle: 'italic' }}>
           구글 정보를 불러오는 중...
         </div>
       )}
-      
+
       {placeDetails && (
-        <div style={{ 
-          borderTop: '1px solid #eee', 
-          paddingTop: '12px',
-          marginTop: '12px'
-        }}>
-          <h5 style={{ margin: '0 0 8px 0', color: '#4285f4' }}>📍 구글 정보</h5>
-          
+        <div
+          style={{
+            borderTop: '1px solid #eee',
+            paddingTop: '12px',
+            marginTop: '12px',
+          }}
+        >
+          <h5 style={{ margin: '0 0 8px 0', color: '#4285f4' }}>
+            📍 구글 정보
+          </h5>
+
           {placeDetails.rating && (
             <div style={{ marginBottom: '8px' }}>
-              <StarRating 
-                rating={placeDetails.rating} 
-                total={placeDetails.user_ratings_total} 
+              <StarRating
+                rating={placeDetails.rating}
+                total={placeDetails.user_ratings_total}
               />
             </div>
           )}
-          
-          {placeDetails.opening_hours && (
-            <div style={{ marginBottom: '8px' }}>
-              <span style={{ 
-                display: 'inline-block',
-                padding: '2px 8px',
-                borderRadius: '12px',
-                fontSize: '12px',
-                fontWeight: 'bold',
-                backgroundColor: placeDetails.opening_hours.open_now ? '#4caf50' : '#f44336',
-                color: 'white'
-              }}>
-                {placeDetails.opening_hours.open_now ? '영업 중' : '영업 종료'}
-              </span>
-            </div>
-          )}
-          
+
+          {renderOpenStatus(placeDetails.opening_hours)}
+
           {placeDetails.formatted_phone_number && (
             <div style={{ marginBottom: '8px', fontSize: '14px' }}>
-              📞 <a href={`tel:${placeDetails.formatted_phone_number}`} style={{ color: '#4285f4', textDecoration: 'none' }}>
+              📞{' '}
+              <a
+                href={`tel:${placeDetails.formatted_phone_number}`}
+                style={{ color: '#4285f4', textDecoration: 'none' }}
+              >
                 {placeDetails.formatted_phone_number}
               </a>
             </div>
           )}
-          
+
           {placeDetails.website && (
             <div style={{ marginBottom: '8px', fontSize: '14px' }}>
-              🌐 <a href={placeDetails.website} target="_blank" rel="noopener noreferrer" style={{ color: '#4285f4', textDecoration: 'none' }}>
+              🌐{' '}
+              <a
+                href={placeDetails.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#4285f4', textDecoration: 'none' }}
+              >
                 웹사이트 방문
               </a>
             </div>
           )}
-          
+
           {placeDetails.reviews && placeDetails.reviews.length > 0 && (
             <div style={{ marginTop: '12px' }}>
               <h6 style={{ margin: '0 0 8px 0', color: '#666' }}>최근 리뷰</h6>
               {placeDetails.reviews.slice(0, 2).map((review, index) => (
-                <div key={index} style={{ 
-                  marginBottom: '8px', 
-                  padding: '8px',
-                  backgroundColor: '#f8f9fa',
-                  borderRadius: '8px',
-                  fontSize: '13px'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                <div
+                  key={index}
+                  style={{
+                    marginBottom: '8px',
+                    padding: '8px',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginBottom: '4px',
+                    }}
+                  >
                     <strong>{review.author_name}</strong>
                     <StarRating rating={review.rating} />
                   </div>
                   <p style={{ margin: 0, color: '#666', lineHeight: 1.4 }}>
-                    {review.text.length > 100 ? `${review.text.substring(0, 100)}...` : review.text}
+                    {review.text.length > 100
+                      ? `${review.text.substring(0, 100)}...`
+                      : review.text}
                   </p>
                 </div>
               ))}
@@ -162,4 +239,4 @@ const EnrichedPlaceCard: React.FC<EnrichedPlaceCardProps> = ({
   );
 };
 
-export default EnrichedPlaceCard; 
+export default EnrichedPlaceCard;

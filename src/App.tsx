@@ -9,9 +9,9 @@ function App() {
   const center = { lat: 37.4138, lng: 127.5183 };
   
   const { markers: originalMarkers, loading, error } = useGgApiData();
-  const enrichedMarkers = usePlacesEnrichment(originalMarkers);
+  const { enrichedMarkers, isLoading: isLoadingEnrichedMarkers } = usePlacesEnrichment(originalMarkers);
 
-  if (loading) {
+  if (loading || isLoadingEnrichedMarkers) {
     return (
       <div style={{ width: '100vw', minHeight: '100vh', margin: '0', padding: '20px', boxSizing: 'border-box', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <h2>지도 데이터를 불러오는 중...</h2>

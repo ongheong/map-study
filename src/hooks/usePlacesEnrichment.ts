@@ -21,12 +21,14 @@ const usePlacesEnrichment = (
   const [enrichedMarkers, setEnrichedMarkers] = useState<EnrichedMarkerData[]>(
     []
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (!originalMarkers.length || !window.google) return;
+    if (!originalMarkers.length || !window.google?.maps?.places) return;
 
     /** google Places API 호출하여 매장 정보 조회 */
     const enrichMarkers = async () => {
+      setIsLoading(true);
       const service = new window.google.maps.places.PlacesService(
         document.createElement('div')
       );
@@ -89,27 +91,14 @@ const usePlacesEnrichment = (
           };
         }
         setEnrichedMarkers([...enrichedData]);
+        setIsLoading(false);
       }
     };
 
-    // Google Maps API가 로드된 후 실행
-    if (window.google?.maps?.places) {
-      enrichMarkers();
-    } else {
-      // Places 라이브러리가 로드되기를 기다림
-      const checkPlaces = setInterval(() => {
-        if (window.google?.maps?.places) {
-          // 실시간으로 로드되는 것을 확인하기 위해 100ms 마다 확인
-          clearInterval(checkPlaces);
-          enrichMarkers();
-        }
-      }, 100);
-
-      return () => clearInterval(checkPlaces);
-    }
+    enrichMarkers();
   }, [originalMarkers]);
 
-  return enrichedMarkers;
+  return { enrichedMarkers, isLoading };
 };
 
 export default usePlacesEnrichment;
